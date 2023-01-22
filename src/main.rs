@@ -26,6 +26,7 @@ impl Plugin for Dbg {
         input: &Value,
     ) -> Result<Value, LabeledError> {
         assert_eq!(name, "dbg");
+        // eprintln!("callig_command: {}\n", call.calling_command);
         //////////////////////////
         // let head = call.head;
         let original_input = input.clone();

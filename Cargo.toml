@@ -12,5 +12,5 @@ license = "MIT"
 [dependencies]
 # nu-plugin = "^0.73"
 # nu-protocol = "^0.73"
-nu-plugin = { path = "../nushell/crates/nu-plugin", version = "0.73.1"}
-nu-protocol = { path = "../nushell/crates/nu-protocol", version="0.73.1"}
+nu-plugin = { path = "../nushell/crates/nu-plugin", version = "0.74.1"}
+nu-protocol = { path = "../nushell/crates/nu-protocol", version="0.74.1"}
