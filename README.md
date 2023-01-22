@@ -1,36 +1,34 @@
-# nu_plugin_template
+# Readme
 
-This is a starter plugin. It just lays out one way to make nushell plugins with nushell version 0.72.0
+This plugin is intended to be run like so:
+```nu
+ls | dbg | get name | dbg
+```
+The idea is to allow you to get debug information from each step in the pipeline. 
 
-This template is intended to be used with [cargo-generate](https://github.com/cargo-generate/cargo-generate) in order to quickly
-bootstrap nushell plugin projects.
+I was thinking about naming it `inspect`, rather than `dbg` as `dbg` can be confused with `debug`. Alternatively we could roll this functionality into `debug`.
 
-## Usage:
+## Sample Output
+
+I'd really like to clean this up somehow.
+![dbg output](https://raw.githubusercontent.com/fdncred/nu_plugin_dbg/main/assets/dbg.png)
 
 ```
-> cargo generate --git https://github.com/fdncred/nu_plugin_template
-Project Name: <you choose a name here like nu-plugin-random>
-What should we call the plugin struct?: <you chose a name like RandomStruct>
-What is the name of this plugin package? <you choose a name like random>
-> cd nu-plugin-random
-> cargo build
+> ls | dbg | get name | dbg
+input description: table<name: string, type: string, size: filesize, modified: date>
 
-# You only need to run this once per nushell session, or after updating the
-# signature of the plugin.
-> register ./target/debug/nu-plugin-random
+input value: [{name: Cargo.lock, type: file, size: 36.6 KiB, modified: Sun, 22 Jan 2023 07:46:48 -0600 (34 seconds ago)}{name: Cargo.toml, type: file, size: 521 B, modified: Sun, 22 Jan 2023 07:46:46 -0600 (36 seconds ago)}{name: LICENSE, type: file, size: 1.1 KiB, modified: Sat, 24 Dec 2022 13:48:43 -0600 (4 weeks ago)}{name: README.md, type: file, size: 1.2 KiB, modified: Sat, 24 Dec 2022 13:48:43 -0600 (4 weeks ago)}{name: src, type: dir, size: 128 B, modified: Sat, 24 Dec 2022 13:48:43 -0600 (4 weeks ago)}{name: target, type: dir, size: 192 B, modified: Fri, 30 Dec 2022 07:32:48 -0600 (3 weeks ago)}]
 
-> 'pas' | random faux
-Hello, faux! with value: pas
+input description: list<string>
+
+input value: [Cargo.lockCargo.tomlLICENSEREADME.mdsrctarget]
+
+╭───┬────────────╮
+│ 0 │ Cargo.lock │
+│ 1 │ Cargo.toml │
+│ 2 │ LICENSE    │
+│ 3 │ README.md  │
+│ 4 │ src        │
+│ 5 │ target     │
+╰───┴────────────╯
 ```
-
-## Config values
-
-- `plugin_name` - all nushell plugins are binaries with the name format
-`nu_plugin_SOMETHING`. This is how nushell discovers them. You need to tell this
-generator what that `SOMETHING` is. If you enter `random` as the plugin name,
-your binary will be called `nu_plugin_random`, and you will run it by entering
-`random`.
-
-- `plugin_struct` - name of the struct that implements the `Plugin` trait from
-`nu-plugin` crate.
-
