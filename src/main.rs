@@ -1,7 +1,7 @@
-mod dbg;
+mod table;
+use std::os::fd::AsRawFd;
+
 use nu_plugin::{serve_plugin, EvaluatedCall, LabeledError, MsgPackSerializer, Plugin};
-use nu_protocol::engine::EngineState;
-// use nu_protocol::engine::Stack;
 use nu_protocol::{Category, Signature, Value};
 
 struct Dbg;
@@ -26,55 +26,33 @@ impl Plugin for Dbg {
         input: &Value,
     ) -> Result<Value, LabeledError> {
         assert_eq!(name, "dbg");
-        // eprintln!("callig_command: {}\n", call.calling_command);
-        //////////////////////////
-        // let head = call.head;
+
         let original_input = input.clone();
+
         let value = input.clone();
         let description = match value {
             Value::CustomValue { ref val, .. } => val.value_string(),
             _ => value.get_type().to_string(),
         };
 
-        // let no_newline = false;
-        // let to_stderr = false;
-        let engine_state = EngineState::new();
-        let config = engine_state.config;
-        // let mut stack = Stack::new();
+        let termsize = termsize();
 
-        // eprintln!("{}", value);
-        // value
-        //     .into_pipeline_data()
-        //     .print(&engine_state, &mut stack, no_newline, to_stderr)?;
+        let table = table::build_table(value, description, termsize);
 
-        eprintln!("input description: {}\n", description);
-
-        // Ok(Value::String {
-        //     val: description,
-        //     span: head,
-        // })
-        eprintln!("input value: {}\n", input.clone().debug_string("", &config));
+        eprintln!("{table}\n");
 
         Ok(original_input)
-        // Ok(Value::Nothing { span: head })
-        //////////////////////////
-        // let param: Option<Spanned<String>> = call.opt(0)?;
-
-        // let ret_val = match input {
-        //     Value::String { val, span } => {
-        //         crate::dbg::dbg_do_something(param, val, *span)?
-        //     }
-        //     v => {
-        //         return Err(LabeledError {
-        //             label: "Expected something from pipeline".into(),
-        //             msg: format!("requires some input, got {}", v.get_type()),
-        //             span: Some(call.head),
-        //         });
-        //     }
-        // };
-
-        // Ok(ret_val)
     }
+}
+
+fn termsize() -> usize {
+    // because STDOUT is redirected we need to use STDERR descriptor
+    let (cols, _) = match terminal_size::terminal_size_using_fd(std::io::stderr().as_raw_fd()) {
+        Some((w, h)) => (w.0, h.0),
+        None => (0, 0),
+    };
+
+    cols as usize
 }
 
 fn main() {
