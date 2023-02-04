@@ -6,29 +6,50 @@ ls | dbg | get name | dbg
 ```
 The idea is to allow you to get debug information from each step in the pipeline. 
 
-I was thinking about naming it `inspect`, rather than `dbg` as `dbg` can be confused with `debug`. Alternatively we could roll this functionality into `debug`.
+I was thinking about naming it something other than `dbg` as `dbg` can be confused with `debug`. Suggestions are welcome. Alternatively we could roll this functionality into `debug`.
 
 ## Sample Output
 
 I'd really like to clean this up somehow.
 ![dbg output](https://raw.githubusercontent.com/fdncred/nu_plugin_dbg/main/assets/dbg2.png)
 
-```
-> ls | dbg | get name | dbg
-input description: table<name: string, type: string, size: filesize, modified: date>
+```shell
+> ls | dbg | get name | dbg 
+╭─────────────┬───────────────────────────────────────────────────────────────────╮
+│ description │ table<name: string, type: string, size: filesize, modified: date> │
+├─────────────┴──┬─────────┬─────────────┬────────────────────────────────────────┤
+│ name           │ type    │ size        │ modified                               │
+├────────────────┼─────────┼─────────────┼────────────────────────────────────────┤
+│ Cargo.lock     │ file    │ 39.6 KiB    │ 2023-02-04T07:28:46.941580628-06:00    │
+│ Cargo.toml     │ file    │ 589 B       │ 2023-02-04T07:28:46.941857876-06:00    │
+│ LICENSE        │ file    │ 1.1 KiB     │ 2022-12-24T13:48:43.872126742-06:00    │
+│ README.md      │ file    │ 1.5 KiB     │ 2023-01-22T07:57:05.501237065-06:00    │
+│ assets         │ dir     │ 96 B        │ 2023-01-22T07:52:43.762056555-06:00    │
+│ src            │ dir     │ 128 B       │ 2023-02-04T07:28:46.942071125-06:00    │
+│ target         │ dir     │ 192 B       │ 2022-12-30T07:32:48.785236198-06:00    │
+╰────────────────┴─────────┴─────────────┴────────────────────────────────────────╯
 
-input value: [{name: Cargo.lock, type: file, size: 36.6 KiB, modified: Sun, 22 Jan 2023 07:46:48 -0600 (34 seconds ago)}{name: Cargo.toml, type: file, size: 521 B, modified: Sun, 22 Jan 2023 07:46:46 -0600 (36 seconds ago)}{name: LICENSE, type: file, size: 1.1 KiB, modified: Sat, 24 Dec 2022 13:48:43 -0600 (4 weeks ago)}{name: README.md, type: file, size: 1.2 KiB, modified: Sat, 24 Dec 2022 13:48:43 -0600 (4 weeks ago)}{name: src, type: dir, size: 128 B, modified: Sat, 24 Dec 2022 13:48:43 -0600 (4 weeks ago)}{name: target, type: dir, size: 192 B, modified: Fri, 30 Dec 2022 07:32:48 -0600 (3 weeks ago)}]
-
-input description: list<string>
-
-input value: [Cargo.lockCargo.tomlLICENSEREADME.mdsrctarget]
+╭─────────────┬──────────────╮
+│ description │ list<string> │
+├─────────────┴──────────────┤
+│                            │
+├────────────────────────────┤
+│ Cargo.lock                 │
+│ Cargo.toml                 │
+│ LICENSE                    │
+│ README.md                  │
+│ assets                     │
+│ src                        │
+│ target                     │
+╰────────────────────────────╯
 
 ╭───┬────────────╮
 │ 0 │ Cargo.lock │
 │ 1 │ Cargo.toml │
 │ 2 │ LICENSE    │
 │ 3 │ README.md  │
-│ 4 │ src        │
-│ 5 │ target     │
+│ 4 │ assets     │
+│ 5 │ src        │
+│ 6 │ target     │
 ╰───┴────────────╯
 ```
