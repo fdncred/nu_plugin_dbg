@@ -11,7 +11,7 @@ I was thinking about naming it `inspect`, rather than `dbg` as `dbg` can be conf
 ## Sample Output
 
 I'd really like to clean this up somehow.
-![dbg output](https://raw.githubusercontent.com/fdncred/nu_plugin_dbg/main/assets/dbg.png)
+![dbg output](https://raw.githubusercontent.com/fdncred/nu_plugin_dbg/main/assets/dbg2.png)
 
 ```
 > ls | dbg | get name | dbg
