@@ -1,6 +1,4 @@
 mod table;
-use std::os::fd::AsRawFd;
-
 use nu_plugin::{serve_plugin, EvaluatedCall, LabeledError, MsgPackSerializer, Plugin};
 use nu_protocol::{Category, PluginExample, PluginSignature, Value};
 
@@ -50,9 +48,28 @@ impl Plugin for Dbg {
     }
 }
 
+#[cfg(not(windows))]
 fn termsize() -> usize {
+    use std::os::fd::AsRawFd;
+
     // because STDOUT is redirected we need to use STDERR descriptor
     let (cols, _) = match terminal_size::terminal_size_using_fd(std::io::stderr().as_raw_fd()) {
+        Some((w, h)) => (w.0, h.0),
+        None => (0, 0),
+    };
+
+    cols as usize
+}
+
+#[cfg(windows)]
+fn termsize() -> usize {
+    use std::os::windows::io::RawHandle;
+    use windows_sys::Win32::System::Console::{GetStdHandle, STD_ERROR_HANDLE};
+
+    let stderr = unsafe { GetStdHandle(STD_ERROR_HANDLE) } as RawHandle;
+
+    // because STDOUT is redirected we need to use STDERR descriptor
+    let (cols, _) = match terminal_size::terminal_size_using_handle(stderr) {
         Some((w, h)) => (w.0, h.0),
         None => (0, 0),
     };

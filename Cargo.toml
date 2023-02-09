@@ -13,5 +13,12 @@ license = "MIT"
 nu-plugin = { path = "../nushell/crates/nu-plugin", version = "0.75.1"}
 nu-protocol = { path = "../nushell/crates/nu-protocol", version="0.75.1"}
 nu-engine = { path = "../nushell/crates/nu-engine", version = "0.75.1"}
-terminal_size = "0.2.1"
+terminal_size = "0.2.3"
 tabled = "0.10.0"
+
+[target.'cfg(windows)'.dependencies.windows-sys]
+version = "0.45.0"
+features = [
+    "Win32_Foundation",
+    "Win32_System_Console",
+]
