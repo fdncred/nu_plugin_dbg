@@ -2,7 +2,7 @@ mod table;
 use std::os::fd::AsRawFd;
 
 use nu_plugin::{serve_plugin, EvaluatedCall, LabeledError, MsgPackSerializer, Plugin};
-use nu_protocol::{Category, Signature, Value};
+use nu_protocol::{Category, PluginExample, PluginSignature, Value};
 
 struct Dbg;
 
@@ -13,10 +13,15 @@ impl Dbg {
 }
 
 impl Plugin for Dbg {
-    fn signature(&self) -> Vec<Signature> {
-        vec![Signature::build("dbg")
+    fn signature(&self) -> Vec<PluginSignature> {
+        vec![PluginSignature::build("dbg")
             .usage("View dbg results")
-            .category(Category::Experimental)]
+            .category(Category::Experimental)
+            .plugin_examples(vec![PluginExample {
+                description: "View dbg results in a pipeline".into(),
+                example: "ls | dbg | get name | dbg".into(),
+                result: None,
+            }])]
     }
 
     fn run(
