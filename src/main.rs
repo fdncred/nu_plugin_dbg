@@ -80,3 +80,49 @@ fn termsize() -> usize {
 fn main() {
     serve_plugin(&mut Dbg::new(), MsgPackSerializer);
 }
+
+pub fn debug_string_without_formatting(value: &Value) -> String {
+    match value {
+        Value::Bool { val, .. } => val.to_string(),
+        Value::Int { val, .. } => val.to_string(),
+        Value::Float { val, .. } => val.to_string(),
+        Value::Filesize { val, .. } => val.to_string(),
+        Value::Duration { val, .. } => val.to_string(),
+        Value::Date { val, .. } => format!("{val:?}"),
+        Value::Range { val, .. } => {
+            format!(
+                "{}..{}",
+                debug_string_without_formatting(&val.from),
+                debug_string_without_formatting(&val.to)
+            )
+        }
+        Value::String { val, .. } => val.clone(),
+        Value::List { vals: val, .. } => format!(
+            "[{}]",
+            val.iter()
+                .map(debug_string_without_formatting)
+                .collect::<Vec<_>>()
+                .join(" ")
+        ),
+        Value::Record { cols, vals, .. } => format!(
+            "{{{}}}",
+            cols.iter()
+                .zip(vals.iter())
+                .map(|(x, y)| format!("{}: {}", x, debug_string_without_formatting(y)))
+                .collect::<Vec<_>>()
+                .join(" ")
+        ),
+        Value::LazyRecord { val, .. } => match val.collect() {
+            Ok(val) => debug_string_without_formatting(&val),
+            Err(error) => format!("{error:?}"),
+        },
+        //TODO: It would be good to drill in deeper to blocks and closures.
+        Value::Block { val, .. } => format!("<Block {val}>"),
+        Value::Closure { val, .. } => format!("<Closure {val}>"),
+        Value::Nothing { .. } => String::new(),
+        Value::Error { error } => format!("{error:?}"),
+        Value::Binary { val, .. } => format!("{val:?}"),
+        Value::CellPath { val, .. } => val.into_string(),
+        Value::CustomValue { val, .. } => val.value_string(),
+    }
+}

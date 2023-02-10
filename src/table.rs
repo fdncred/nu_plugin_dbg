@@ -118,8 +118,9 @@ mod truncate_table {
 }
 
 mod util {
+    use crate::debug_string_without_formatting;
     use nu_engine::get_columns;
-    use nu_protocol::{ast::PathMember, Config, Span, Value};
+    use nu_protocol::{ast::PathMember, Span, Value};
 
     /// Try to build column names and a table grid.
     pub fn collect_input(value: Value) -> (Vec<String>, Vec<Vec<String>>) {
@@ -128,7 +129,7 @@ mod util {
                 cols,
                 vec![vals
                     .into_iter()
-                    .map(|s| s.debug_string(" ", &Config::default()))
+                    .map(|s| debug_string_without_formatting(&s))
                     .collect()],
             ),
             Value::List { vals, .. } => {
@@ -148,7 +149,7 @@ mod util {
                         val: line.to_string(),
                         span,
                     })
-                    .map(|val| vec![val.debug_string(" ", &Config::default())])
+                    .map(|val| vec![debug_string_without_formatting(&val)])
                     .collect();
 
                 (vec![String::from("")], lines)
@@ -156,7 +157,7 @@ mod util {
             Value::Nothing { .. } => (vec![], vec![]),
             value => (
                 vec![String::from("")],
-                vec![vec![value.debug_string(" ", &Config::default())]],
+                vec![vec![debug_string_without_formatting(&value)]],
             ),
         }
     }
@@ -169,12 +170,12 @@ mod util {
         } else if cols.len() == records.len() {
             vec![records
                 .into_iter()
-                .map(|s| s.debug_string(" ", &Config::default()))
+                .map(|s| debug_string_without_formatting(&s))
                 .collect()]
         } else {
             records
                 .into_iter()
-                .map(|record| vec![record.debug_string(" ", &Config::default())])
+                .map(|record| vec![debug_string_without_formatting(&record)])
                 .collect()
         }
     }
@@ -195,7 +196,7 @@ mod util {
 
         for (i, header) in headers.iter().enumerate() {
             let value = record_lookup_value(item, header);
-            rows[i] = value.debug_string(" ", &Config::default());
+            rows[i] = debug_string_without_formatting(&value);
         }
 
         rows
