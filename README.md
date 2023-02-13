@@ -1,5 +1,9 @@
 # Readme
 
+--------------
+This plugin is now a part of nushell as the `inspect` command as of 2023-02-12 https://github.com/nushell/nushell/pull/8028
+--------------
+
 This plugin is intended to be run like so:
 ```nu
 ls | dbg | get name | dbg
